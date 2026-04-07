@@ -1,0 +1,137 @@
+---
+title: "HW1_TA"
+author: "Jungyoon Kang"
+output: 
+  pdf_document: 
+    latex_engine: lualatex
+editor_options: 
+  chunk_output_type: console
+---
+
+```{r setup, include=FALSE}
+source('Parm_Estm.R')
+if (!require(tidyverse)) install.packages('tidyverse')
+if (!require(gridExtra)) install.packages('gridExtra')
+if (!require(knitr)) install.packages('knitr')
+if (!require(kableExtra)) install.packages('kableExtra')
+
+library(tidyverse)
+library(gridExtra)
+library(knitr)
+library(kableExtra)
+
+options(knitr.kable.NA = '')
+```
+
+# (a) Figures for best-fit curves
+
+```{r figure, echo=FALSE, fig.width=10, fig.height=4, fig.align='center'}
+x <- seq(0, 20, 0.05)
+
+df_plot_mle <- data.frame(
+  x = x,
+  POW1  = compute_p_pow1(x,  parm_pow1),
+  POW2  = compute_p_pow2(x,  parm_pow2),
+  EXP1  = compute_p_exp1(x,  parm_exp1),
+  EXP2  = compute_p_exp2(x,  parm_exp2),
+  EXPOW = compute_p_expow(x, parm_expow),
+  HYP1  = compute_p_hyp1(x,  parm_hyp1),
+  HYP2  = compute_p_hyp2(x,  parm_hyp2)
+) %>%
+  gather(key = 'model', value = 'y',
+         POW1, POW2, EXP1, EXP2, EXPOW, HYP1, HYP2)
+
+df_plot_lse <- data.frame(
+  x = x,
+  POW1  = compute_p_pow1(x,  parm_lse_pow1),
+  POW2  = compute_p_pow2(x,  parm_lse_pow2),
+  EXP1  = compute_p_exp1(x,  parm_lse_exp1),
+  EXP2  = compute_p_exp2(x,  parm_lse_exp2),
+  EXPOW = compute_p_expow(x, parm_lse_expow),
+  HYP1  = compute_p_hyp1(x,  parm_lse_hyp1),
+  HYP2  = compute_p_hyp2(x,  parm_lse_hyp2)
+) %>%
+  gather(key = 'model', value = 'y',
+         POW1, POW2, EXP1, EXP2, EXPOW, HYP1, HYP2)
+
+df_data <- data.frame(
+  x = t_int,
+  y = p_corr
+)
+
+p_mle <- ggplot() +
+  geom_line(data = df_plot_mle, aes(x = x, y = y, group = model, color = model)) +
+  geom_point(data = df_data, aes(x = x, y = y)) +
+  labs(title = 'Best-fit curves using MLE estimates') +
+  xlab('Time interval') +
+  ylab('Probability of correct recall') +
+  theme_classic()
+
+p_lse <- ggplot() +
+  geom_line(data = df_plot_lse, aes(x = x, y = y, group = model, color = model)) +
+  geom_point(data = df_data, aes(x = x, y = y)) +
+  labs(title = 'Best-fit curves using LSE estimates') +
+  xlab('Time interval') +
+  ylab('Probability of correct recall') +
+  theme_classic()
+
+grid.arrange(p_mle, p_lse, ncol = 2)
+```
+
+\pagebreak
+
+# (b) Tables for parameter estimates & $R^2$
+
+```{r table-mle-estimates, echo=FALSE}
+df_pars_mle <- data.frame(
+  POW1  = c(NA, parm_pow1, NA),
+  POW2  = c(parm_pow2, NA),
+  EXP1  = c(NA, parm_exp1, NA),
+  EXP2  = c(parm_exp2, NA),
+  EXPOW = c(parm_expow),
+  HYP1  = c(NA, parm_hyp1, NA),
+  HYP2  = c(parm_hyp2, NA)
+)
+rownames(df_pars_mle) <- c('a', 'b', 'c')
+
+kable(df_pars_mle, 'latex', booktabs = TRUE, digits = 4, escape = FALSE,
+      caption = 'Model parameter estimates using MLE') %>%
+  kable_styling(position = "center", latex_options = 'HOLD_position')
+```
+
+```{r table-lse-estimates, echo=FALSE}
+df_pars_lse <- data.frame(
+  POW1  = c(NA, parm_lse_pow1, NA),
+  POW2  = c(parm_lse_pow2, NA),
+  EXP1  = c(NA, parm_lse_exp1, NA),
+  EXP2  = c(parm_lse_exp2, NA),
+  EXPOW = c(parm_lse_expow),
+  HYP1  = c(NA, parm_lse_hyp1, NA),
+  HYP2  = c(parm_lse_hyp2, NA)
+)
+rownames(df_pars_lse) <- c('a', 'b', 'c')
+
+kable(df_pars_lse, 'latex', booktabs = TRUE, digits = 4, escape = FALSE,
+      caption = 'Model parameter estimates using LSE') %>%
+  kable_styling(position = "center", latex_options = 'HOLD_position')
+```
+
+```{r table-mle-gof, echo=FALSE}
+kable(mle_summary, 'latex', booktabs = TRUE, digits = 3, escape = FALSE,
+      col.names = c('Models', 'Log-likelihood', '$R^2$'), linesep = '',
+      caption = 'Goodness-of-fit indices using MLE') %>%
+  kable_styling(position = "center", latex_options = 'HOLD_position')
+```
+
+```{r table-lse-gof, echo=FALSE}
+kable(lse_summary, 'latex', booktabs = TRUE, digits = 3, escape = FALSE,
+      col.names = c('Models', 'SSE', '$R^2$'), linesep = '',
+      caption = 'Goodness-of-fit indices using LSE') %>%
+  kable_styling(position = "center", latex_options = 'HOLD_position')
+```
+
+\pagebreak
+
+# (c) Discussion
+
+Maximum Likelihood estimation (MLE) and Least squares estimation (LSE) were conducted to estimate the parameters of the seven models. Based on goodness-of-fit (GOF) indices, the model with higher log-likelihood, lower SSE (sum of squared errors), or higher $R^2$ is preferred as the better model. According to the results, POW2 model and EXPOW models are nested and both showed the best fit. However, the simpler model (with fewer parameters) should be chosen as the best model when GOF is same. Therefore we can conclude that POW2 is the best model.
