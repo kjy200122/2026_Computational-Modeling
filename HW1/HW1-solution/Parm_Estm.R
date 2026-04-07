@@ -19,7 +19,7 @@
 rm(list=ls())  # clear workspace
 graphics.off() # close all figures
 
-set.seed(20250326)  # set a seed number for replication
+set.seed(202604)  # set a seed number for replication
 source("MLE_LSE.R")   # source MLE_LSE.R code
 
 ##########################
@@ -28,7 +28,7 @@ source("MLE_LSE.R")   # source MLE_LSE.R code
 ##########################
 n_total <- 50 # sample size 
 t_int <-  c(0.5, 1,  2,  4,  8, 12, 18, 20) # time interval values
-n_corr <- c(44, 35, 27, 24, 17, 15, 13, 11) # number of correct responses
+n_corr <- c(44, 35, 27, 24, 17, 15, 13, 10) # number of correct responses
 p_corr <- n_corr/n_total # proportion correct
 
 # Generate random uniform numbers between 0 and 1 to use as initials for the optim procedure
