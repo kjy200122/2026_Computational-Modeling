@@ -25,7 +25,8 @@ options(knitr.kable.NA = '')
 
 # (a) Figures for best-fit curves
 
-```{r figure, echo=FALSE, fig.width=10, fig.height=4, fig.align='center'}
+```{r figure, echo=FALSE, fig.width=9, fig.height=3.5, fig.align='center', out.width='100%'}
+
 x <- seq(0, 20, 0.05)
 
 df_plot_mle <- data.frame(
