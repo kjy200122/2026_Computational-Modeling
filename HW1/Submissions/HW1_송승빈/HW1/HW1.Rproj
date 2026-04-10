@@ -1,0 +1,18 @@
+Version: 1.0
+ProjectId: e8c8a4ad-4a70-4fb4-8771-616fa6ead057
+
+RestoreWorkspace: Default
+SaveWorkspace: Default
+AlwaysSaveHistory: Default
+
+EnableCodeIndexing: Yes
+UseSpacesForTab: Yes
+NumSpacesForTab: 2
+Encoding: UTF-8
+
+RnwWeave: Sweave
+LaTeX: pdfLaTeX
+
+AutoAppendNewline: Yes
+
+ProjectName: HW1
