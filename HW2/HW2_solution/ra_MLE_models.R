@@ -1,7 +1,7 @@
 rm(list=ls())  # clear workspace
 graphics.off() # close all figures
 
-set.seed(20250403)  # set a seed number for replication
+set.seed(202604)  # set a seed number for replication
 source('ra_MLE_prototype.R')
 
 # Loading data
@@ -121,10 +121,9 @@ for (s in 1:N){
 }
 
 modelcomp_summary <- data.frame(row.names = c('ra prospect','ra noLA', 'ra noRA'),
-                                'AIC' = c(mean(modelcomp_prospect$AIC), mean(modelcomp_noLA$AIC), mean(modelcomp_noRA$AIC)),
-                                'sd (AIC)' = c(sd(modelcomp_prospect$AIC), sd(modelcomp_noLA$AIC),  sd(modelcomp_noRA$AIC)),
-                                'BIC' = c(mean(modelcomp_prospect$BIC), mean(modelcomp_noLA$BIC), mean(modelcomp_noRA$BIC)),
-                                'sd (BIC)' = c(sd(modelcomp_prospect$BIC), sd(modelcomp_noLA$BIC),  sd(modelcomp_noRA$BIC)))
+                                'AIC' = c(sum(modelcomp_prospect$AIC), sum(modelcomp_noLA$AIC), sum(modelcomp_noRA$AIC)),
+                                'BIC' = c(sum(modelcomp_prospect$BIC), sum(modelcomp_noLA$BIC), sum(modelcomp_noRA$BIC))
+                                )
 
 
 # save for HW2 Q2

@@ -1,6 +1,6 @@
 ---
 title: "HW2_TA"
-author: "Hyeonmin Lee"
+author: "Jungyoon Kang"
 output: 
   pdf_document: 
     latex_engine: lualatex
@@ -71,8 +71,8 @@ kable(df_estimates_noRA, 'latex', booktabs = TRUE, digits = 3, escape = FALSE,
 
 ```{r Q5 model comparison, echo = FALSE}
 kable(modelcomp_summary, 'latex', booktabs = TRUE, digits = 3, escape = FALSE,
-      col.names = c('AIC (mean)', 'AIC (sd)', 'BIC (mean)', 'BIC (sd)'),
-      caption = 'Model comparison (mean value across 5 subjects)') %>%
+      col.names = c('AIC (sum)', 'BIC (sum)'),
+      caption = 'Model comparison (sum across 5 subjects)') %>%
   kable_styling(position = "center", latex_options = 'HOLD_position')
 ```
 

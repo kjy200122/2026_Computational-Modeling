@@ -18,7 +18,7 @@
 rm(list=ls())  # clear workspace
 graphics.off() # close all figures
 
-set.seed(20250403)  # set a seed number for replication
+set.seed(202604)  # set a seed number for replication
 source("MLE.R")   # source MLE.R code
 
 ##########################
@@ -159,8 +159,3 @@ modelcomp_summary = data.frame(Models = model_names,
                                BIC = all_BIC
                                )
 print(modelcomp_summary)
-
-AIC_model = sum(all_AIC)
-BIC_model = sum(all_BIC)
-
-model_AIC_BIC = data.frame(AIC_model, BIC_model)

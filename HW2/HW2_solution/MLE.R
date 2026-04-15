@@ -1,5 +1,5 @@
 #######################################################
-## MLE.R                                         ##
+## MLE.R                                             ##
 ## Maximum Likelihood Estimation (Myung, 2003)       ##
 ## By Yun Tang, Psychology, OSU                      ##
 ##                                                   ##

@@ -1,7 +1,7 @@
 rm(list=ls())  # clear workspace
 graphics.off() # close all figures
 
-set.seed(20240404)  # set a seed number for replication
+set.seed(202604)  # set a seed number for replication
 source('ra_MLE_prototype.R')
 
 # Loading data
