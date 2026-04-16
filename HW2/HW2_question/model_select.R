@@ -1,0 +1,89 @@
+################################################################################
+## model_select.R                                                             ##
+## PSYCH 7695, Spring 2017                                                    ##
+## Maximum Likelihood Estimation (Myung, JMP, 2003)                           ##
+## By Yun Tang, Psychology, OSU                                               ##
+##                                                                            ##
+## Main Program                                                               ##
+## Code Written on 12/18/2009                                                 ##
+##                                                                            ##
+## Modified by Joonsuk Park on Jan 28 2015                                    ##
+## Modified by Jay Myung in Feb 2017                                          ##
+## Modified by Woo-Young Ahn in March 2018                                    ##
+## Modified by Jaeyeong Yang in March 2019                                    ##
+## Modified by Woo-Young Ahn in May 2021                                      ##
+################################################################################
+
+# Loading the (minus) log-likelihood functions
+rm(list=ls())  # clear workspace
+graphics.off() # close all figures
+
+set.seed(202604)  # set a seed number for replication
+#source("MLE_LSE.R")   # source MLE._LSE.R code you programmed for HW1
+
+##########################
+## General Setup        ##
+## Data and Parameters  ##
+##########################
+n_total <- 50 # sample size
+t_int <-  c(0.5, 1,  2,  4,  8, 12, 18, 20) # time interval values
+n_corr <- c(44, 35, 27, 24, 17, 15, 13, 11) # number of correct responses
+p_corr <- n_corr/n_total # proportion correct
+
+# Generate random uniform numbers between 0 and 1 to use as initials for the optim procedure
+param1_init <- runif(1)
+param2_init <- runif(2)
+param3_init <- runif(3)
+
+param_pow2_low <- c(0, 0); param_pow2_up <- c(1, 5);  # lower and upper bounds of POW2 model (0<a<1, 0<b<5)
+param_exp2_low <- c(0, 0); param_exp2_up <- c(1, 5);  # lower and upper bounds of EXP2 model (0<a<1, 0<b<5)
+
+##########################
+## MLE                  ##
+##########################
+
+# Call general purpose optimization rountine
+mle_model_pow2 <- optim(param2_init, mle_pow2, method="L-BFGS-B", lower=param_pow2_low, upper=param_pow2_up, int=t_int, n=n_total, x=n_corr)
+mle_model_exp2 <- optim(param2_init, mle_exp2, method="L-BFGS-B", lower=param_exp2_low, upper=param_exp2_up, int=t_int, n=n_total, x=n_corr)
+
+# Try many different inits to escape from the local maxima
+for (i in 1:100) {
+  # Re-generate random inits. Is it the best way to do this?
+  param1_init <- runif(1); param2_init <- runif(2); param3_init <- runif(3); 
+  
+  # Do the MLE again
+  temp_pow2 <- optim(param2_init, mle_pow2, method="L-BFGS-B", lower=param_pow2_low, upper=param_pow2_up, int=t_int, n=n_total, x=n_corr)
+  temp_exp2 <- optim(param2_init, mle_exp2, method="L-BFGS-B", lower=param_exp2_low, upper=param_exp2_up, int=t_int, n=n_total, x=n_corr)
+  
+  # Replace the results if the latest optimization yields better result
+  if(temp_pow2$value < mle_model_pow2$value) mle_model_pow2 <- temp_pow2  
+  if(temp_exp2$value < mle_model_exp2$value) mle_model_exp2 <- temp_exp2
+}
+
+# Save the MLE parameter estimates
+parm_pow2 <- mle_model_pow2$par
+parm_exp2 <- mle_model_exp2$par
+
+# number of parameters (k_modelName)
+k_pow2 <- 2
+k_exp2 <- 2
+
+# number of data points (N)
+N = length(p_corr) 
+
+# Compute AIC = -2*log(lik) + 2*K
+AIC_pow2 <- 2*mle_model_pow2$value + 2*k_pow2   # mle_model_pow2$value --> -log(lik)
+AIC_exp2 <- 2*mle_model_exp2$value + 2*k_exp2
+
+# Compute BIC = -2*log(lik) + K*log(N)
+BIC_pow2 <- 2*mle_model_pow2$value + 2*log(N)   # mle_model_pow2$value --> -log(lik)
+BIC_exp2 <- 2*mle_model_exp2$value + 2*log(N)
+
+# Generate summary
+all_AIC = round(c(AIC_pow2, AIC_exp2), 3)
+all_BIC = round(c(BIC_pow2, BIC_exp2), 3)
+names = c("POW2", "EXP2")
+
+modelcomp_summary = data.frame(Models = names, AIC = all_AIC, BIC = all_BIC)
+
+print(modelcomp_summary)

@@ -1,0 +1,82 @@
+---
+title: "HW2_TA"
+author: "Jungyoon Kang"
+output: 
+  pdf_document: 
+    latex_engine: lualatex
+editor_options: 
+  chunk_output_type: console
+---
+
+```{r setup, include=FALSE}
+if (!require(tidyverse)) install.packages('tidyverse')
+if (!require(gridExtra)) install.packages('gridExtra')
+if (!require(knitr)) install.packages('knitr')
+if (!require(kableExtra)) install.packages('kableExtra')
+
+library(tidyverse)
+library(gridExtra)
+library(knitr)
+library(kableExtra)
+
+options(knitr.kable.NA = '')
+
+```
+
+
+## Q1
+```{r Q1, echo = FALSE}
+source('./model_select.R')
+
+kable(modelcomp_summary, 'latex', booktabs = TRUE, digits = 3, escape = FALSE,
+      caption = 'Model Comparison') %>%
+  kable_styling(position = "center", latex_options = 'HOLD_position')
+```
+
+Based on AIC and BIC scores, the POW1 model is better than other models. 
+\pagebreak
+
+
+## Q2
+### (1) 
+```{r Q2 single subject, echo = FALSE}
+source('Q2_MLE_single_subject.R')
+
+kable(df_estimates_single, 'latex', booktabs = TRUE, digits = 3, escape = FALSE,
+      caption = 'Model parameter estimates using MLE (subject 2)') %>%
+  kable_styling(position = "center", latex_options = 'HOLD_position')
+```
+
+### (2)
+```{r Q2 all subjects, echo = FALSE}
+source('ra_MLE_models.R')
+
+kable(df_estimates_prospect, 'latex', booktabs = TRUE, digits = 3, escape = FALSE,
+      caption = 'Model parameter estimates using MLE (ra prospect model)') %>%
+  kable_styling(position = "center", latex_options = 'HOLD_position')
+```
+
+## Q3
+```{r Q5 noLA model estimates, echo = FALSE}
+kable(df_estimates_noLA, 'latex', booktabs = TRUE, digits = 3, escape = FALSE,
+      caption = 'Model parameter estimates using MLE (ra LA model)') %>%
+  kable_styling(position = "center", latex_options = 'HOLD_position')
+```
+
+```{r Q5 noRA model estimates, echo = FALSE}
+kable(df_estimates_noRA, 'latex', booktabs = TRUE, digits = 3, escape = FALSE,
+      caption = 'Model parameter estimates using MLE (ra RA model)') %>%
+  kable_styling(position = "center", latex_options = 'HOLD_position')
+```
+
+```{r Q5 model comparison, echo = FALSE}
+kable(modelcomp_summary, 'latex', booktabs = TRUE, digits = 3, escape = FALSE,
+      col.names = c('AIC (sum)', 'BIC (sum)'),
+      caption = 'Model comparison (sum across 5 subjects)') %>%
+  kable_styling(position = "center", latex_options = 'HOLD_position')
+```
+
+Based on AIC and BIC scores (Table 6), the ra_prospect model is better than the other two models. 
+
+
+
