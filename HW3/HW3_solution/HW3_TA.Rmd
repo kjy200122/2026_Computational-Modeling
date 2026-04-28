@@ -1,0 +1,155 @@
+---
+title: "HW3"
+author: "Jungyoon Kang"
+date: "2026-04-21"
+output: pdf_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+if (!require(tidyverse)) install.packages('tidyverse')
+if (!require(gridExtra)) install.packages('gridExtra')
+if (!require(knitr)) install.packages('knitr')
+if (!require(kableExtra)) install.packages('kableExtra')
+if (!require(rstan)) install.packages('rstan')
+
+library(tidyverse)
+library(gridExtra)
+library(knitr)
+library(kableExtra)
+library(rstan)
+library(cowplot)
+
+knitr::opts_chunk$set(echo = FALSE, warning = FALSE, message = FALSE,
+                      fig.width = 10, fig.height = 3, fig.align = "center")
+```
+
+
+# 1.
+
+```{r cars}
+# set the year probabilities
+freshman <- 0.15
+sophomore <- 0.20
+junior <- 0.25
+senior <- 0.40
+
+# make table of the contiditonal probabilites (p(tv|year))
+
+rm <- c(0.15, 0.1, 0.1, 0.6)
+la <- c(0.25, 0.3, 0.2, 0.1)
+hy <- c(0.3, 0.2, 0.3, 0.2)
+ia <- c(0.3, 0.4, 0.4, 0.1)
+
+data <- data.frame(rm, la, hy, ia)
+rows <- c('Freshman', 'Sophomore', 'Junior', 'Senior')
+row.names(data) <- rows
+```
+
+
+```{r}
+# Calculate joint probabilities
+fre_tvs <- freshman * data[1,]; sop_tvs <- sophomore * data[2,]
+jun_tvs <- junior * data[3,]; sen_tvs <- senior * data[4,]
+joint <-  data.frame(rbind(fre_tvs, sop_tvs, jun_tvs, sen_tvs))
+cols <- c('RunningMan', 'Ilivealone', 'HangingoutwithYoo', 'IamSolo')
+colnames(joint) <- cols
+```
+
+```{r}
+#calculate marginal probabilities
+total_year <- c(sum(joint[1,]), sum(joint[2,]), sum(joint[3,]), sum(joint[4,]))
+total <- cbind(joint, total_year)
+total_tv <- c(sum(total$RunningMan), sum(total$Ilivealone), 
+                sum(total$HangingoutwithYoo), sum(total$IamSolo), 
+                sum(total$total_year))
+total <- rbind(total, total_tv)
+row.names(total) <- c(rows, 'total_tv')
+total
+```
+### Joint probability
+### The table above contains joint probabilities and marginal probabilities. The joint probabilities were calculated by multiplying the probability of a college year (p(college year)) with the probability of a TV show given college year (p(TV show|college year)). For example, p(Freshman, Running Man) = p(Freshman) x p(Running Man|Freshman) = 0.15 x 0.4 = 0.06.
+
+```{r}
+# Check independence
+independence <- data.frame()
+for (i in c(1:4)) {
+  ind <- total[5,1:4] * total$total_year[i]
+  independence<- rbind(independence, ind)
+  }
+colnames(independence) <- cols; row.names(independence) <- rows
+independence
+```
+### Check independence
+### I also tested whether college year and TV show are independent or not. If A and B are independent, p(A, B) = p(A) x p(B). Therefore, to test for independence, I caculated p(college year) x p(TV show) and compared the result with p(college year, TV show). The table below shows if p(college year, TV show) is equal to p(college year) x p(TV show). If they are equal, the entry will be marked as "TRUE", and if they are not equal, the entry will be marked as "FALSE".
+
+```{r}
+independence == joint
+```
+### As you can see from the table, none of the joint probabilities match the product of their respective marginal probabilities. For instance, p(freshman) x p(Running man) is 0.046125, whereas p(freshman, Running man) is 0.0225. This implies that college year and TV show are not independent.
+
+\newpage
+
+# 2
+
+### To answer each of the questions, we need to calculate the conditional probability of having COVID given that a person tested positive, which is denoted as p(COVID|positive). 
+
+### p(COVID|positive) = p(COVID, positive) / p(positive) 
+###                   = p(positive|COVID) x p(COVID) / p(COVID) x p(positive|COVID) + p(no COVID) x p(positive|no COVID)
+
+
+
+## 2-(1)
+
+```{r}
+# o = having COVID; x = not having COVID
+# + = positive; - = negative
+
+hit_rate <- 0.9    # hit_rate = p(+|o) = p(+, o)/p(o)
+FA <- 0.04    # false_alarm(FA) = p(+|x) = p(+, x)/p(x)
+o <- 20000/50000000   # p(o) (having COVID)
+x <- 1-o # p(negative) = 1- p(positive)
+pos_o <- o * hit_rate # pos_o = p(+, o) = p(o)*p(+|o)
+pos_x <- x * FA # pos_x = p(+, x) = p(x)*p(+|x)
+
+# calculate p(COVID|positive) = p(o|+)
+# p(o,+)/p(o) = p(+|o)*p(o)/(p(o)*p(+|o)+p(x)*p(+|x))
+covid_given_pos <- pos_o / (pos_o+pos_x)
+cat("answer = ", covid_given_pos)
+
+```
+
+## 2-(2)
+```{r}
+
+# false_negative (FN) = p(negative|COVID) = p(-|o) 
+FN2 = 0.1 # false_negative (FN) = p(-|o) = p(-, o)/p(o)
+hit_rate2 = 1- FN2 # p(-|o) + p(+|o) = 1
+FA2 = 0.04 # false_alarm(FA) = p(+|x) = p(+, x)/p(x)
+o2 <- 20000/50000000   # p(o) (having COVID)
+x2 <- 1-o2 # p(x) (p(negative) = 1- p(positive))
+pos_o2 <- o2 * hit_rate2 # pos_o = p(+, o) = p(o)*p(+|o)
+pos_x2 <- x2 * FA2 # pos_x = p(+, x) = p(x)*p(+|x)
+
+# calculate p(COVID|positive) = p(o|+) 
+# p(o,+)/p(o) = p(+|o)*p(o)/(p(o)*p(+|o)+p(x)*p(+|x))
+covid_given_pos2 <- pos_o2 / (pos_o2+pos_x2)
+cat("answer = ", covid_given_pos2)
+```
+
+## 2-(3)
+```{r}
+# false_negative (FN) = p(negative|COVID) = p(-|o) 
+FN3 = 0.1 # false_negative (FN) = p(-|o) = p(-, o)/p(o)
+hit_rate3 = 1- FN2 # p(-|o) + p(+|o) = 1
+FA3 = 0.04 # false_alarm(FA) = p(+|x) = p(+, x)/p(x)
+o3 <- 0.05   # p(o) (having COVID)
+x3 <- 1-o3 # p(x) (p(negative) = 1- p(positive))
+pos_o3 <- o3 * hit_rate3 # pos_o = p(+, o) = p(o)*p(+|o)
+pos_x3 <- x3 * FA3 # pos_x = p(+, x) = p(x)*p(+|x)
+
+# calculate p(COVID|positive) = p(o|+) 
+# p(o,+)/p(o) = p(+|o)*p(o)/(p(o)*p(+|o)+p(x)*p(+|x))
+covid_given_pos3 <- pos_o3 / (pos_o3+pos_x3)
+cat("answer = ", covid_given_pos3)
+```
