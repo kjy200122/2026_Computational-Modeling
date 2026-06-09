@@ -40,8 +40,8 @@ model {
   sigma ~ normal(0, 1);  
   
   // individual parameters
-  //alpha_pr ~ normal(0,1);
-  //beta_pr ~ normal(0,1);
+  alpha_pr ~ normal(0,1);
+  beta_pr ~ normal(0,1);
   
   // subject loop and trial loop
   for (i in 1:N) {
@@ -63,6 +63,9 @@ model {
   }
 }
 generated quantities {
-  //mu_alpha = Phi_approx(mu_p[1])
-  //mu_beta = Phi_approx(mu_p[1]) * 5
+  real<lower=0, upper=1> mu_alpha;
+  real<lower=0, upper=5> mu_beta;
+  
+  mu_alpha = Phi_approx(mu_p[1]);
+  mu_beta = Phi_approx(mu_p[1]) * 5;
 }

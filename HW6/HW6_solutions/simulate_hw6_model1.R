@@ -1,4 +1,4 @@
-#rm(list=ls())
+rm(list=ls())
 
 # Simulation parameters
 seed <- 2026    # do not change the seed number!
