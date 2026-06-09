@@ -39,7 +39,7 @@ output_Q1 = stan("hw6_model1.stan", data = dataList, pars = c("mu_alpha", "mu_be
 # output_vb = vb(m, data = dataList, pars = c("alpha", "beta"), #c("mu_alpha", "mu_beta", "alpha", "beta"),
 # )
 
-save(output_Q1, file = "output_Q1(1).RData")
+save(output_Q1, file = "output_Q1.RData")
 
 # traceplot
 traceplot(output_Q1)

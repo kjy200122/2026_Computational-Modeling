@@ -57,7 +57,7 @@ alpha_sd = apply(parameters$alpha, 2, sd)
 beta_mean = apply(parameters$beta, 2, mean)
 beta_sd = apply(parameters$beta, 2, sd)
 
-plot(simul_pars$alpha, alpha_mean, xlim=c(0, 0.5), ylim=c(0, 0.5)); abline(0,1)
+plot(simul_pars$alpha, alpha_mean, xlim=c(0, 0.5), ylim=c(0, 1)); abline(0,1)
 arrows(x0=simul_pars$alpha, y0= alpha_mean - alpha_sd, y1= alpha_mean + alpha_sd, length=0.02, angle=90, code=3)
 
 plot(simul_pars$beta, beta_mean, xlim=c(0, 4), ylim=c(0, 4)); abline(0,1)

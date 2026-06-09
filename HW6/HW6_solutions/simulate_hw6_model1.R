@@ -75,3 +75,4 @@ for (i in 1:num_subjs) {
 
 # Write out data
 write.table(all_data, file = "simul_data_hw6_model1.txt", row.names = F, col.names = T, sep = "\t")
+save(simul_pars, file = "simul_pars_Q1Q2.RData")
