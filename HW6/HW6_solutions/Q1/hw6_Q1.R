@@ -31,7 +31,7 @@ dataList <- list(
 )
 
 # run!
-output_Q1 = stan("hw6_model1.stan", data = dataList, pars = c("mu_alpha", "mu_beta", "alpha", "beta"),
+output_Q1 = stan("hw6_model1.stan", data = dataList, pars = c("mu_alpha", "mu_beta", "alpha", "beta", "sigma"),
               iter = 2000, warmup=1000, chains=2, cores=2)
 
 # # variational inference
