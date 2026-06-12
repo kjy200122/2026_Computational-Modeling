@@ -319,7 +319,7 @@ Q4(3) showed better parameter recovery results than Q4(2), for the alpha paramet
 # Q3
 ## (1) Grid approximation and posterior distributions of the ra_prospect model - 10 Grids
 
-```{r q3_tab10, echo=FALSE, message=FALSE}
+```{r q3_tab10, echo=FALSE, message=FALSE, fig.width=10, fig.height=13, out.width="100%"}
 tab10 <- read.csv("Q5/posterior_means_grid10.csv")
 knitr::kable(tab10,
              format      = "latex",
@@ -335,7 +335,7 @@ knitr::include_graphics("Q5/plot_grid10.png")
 
 ## (2) Grid approximation and posterior distributions of the ra_prospect model - 30 Grids
 
-```{r q3_tab30, echo=FALSE, message=FALSE}
+```{r q3_tab30, echo=FALSE, message=FALSE, fig.width=10, fig.height=13, out.width="100%"}
 tab30 <- read.csv("Q5/posterior_means_grid30.csv")
 knitr::kable(tab30,
              format      = "latex",

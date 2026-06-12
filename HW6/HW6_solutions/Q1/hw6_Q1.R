@@ -1,7 +1,7 @@
 # hw6_model1_exec.R
 # Programmed by Woo-Young Ahn (wahn55@snu.ac.kr)
  
-#rm(list=ls())  # remove all variables
+rm(list=ls())  # remove all variables
 
 library(rstan)
 

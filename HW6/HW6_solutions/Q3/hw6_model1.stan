@@ -67,5 +67,5 @@ generated quantities {
   real<lower=0, upper=5> mu_beta;
   
   mu_alpha = Phi_approx(mu_p[1]);
-  mu_beta = Phi_approx(mu_p[1]) * 5;
+  mu_beta = Phi_approx(mu_p[2]) * 5;
 }
