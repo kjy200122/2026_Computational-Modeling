@@ -24,7 +24,7 @@ transformed parameters {
 model {
   // individual parameters
   alpha ~ normal(0,1);
-  beta ~ normal(0,1);
+  beta ~ normal(0,5);
   
   // subject loop and trial loop
   for (i in 1:N) {
